@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cyber AI Security System</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0b132b;
+      color: white;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00d4ff;
+    }
+
+    .chat-box {
+      background: #1c2541;
+      border-radius: 10px;
+      padding: 15px;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 75%;
+    }
+
+    .user {
+      background: #3a86ff;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .ai {
+      background: #06d6a0;
+      color: black;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #00d4ff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .upload {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .upload button {
+      background: #ff006e;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>🔐 Cybersecurity AI Assistant</h1>
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Ask about threats, logs, or security...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <div class="upload">
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload Log</button>
+  </div>
+
+</div>
+
+<script>
+
+  function addMessage(text, type) {
+    const chatBox = document.getElementById("chatBox");
+
+    const div = document.createElement("div");
+    div.classList.add("message", type);
+
+    div.innerHTML = text.replace(/\n/g, "<br>");
+
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const message = input.value;
+
+    if (!message) return;
+
+    addMessage(message, "user");
+
+    fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message: message})
+    })
+            .then(res => res.text())
+            .then(data => {
+              addMessage(data, "ai");
+            });
+
+    input.value = "";
+  }
+
+  function uploadFile() {
+    const fileInput = document.getElementById("fileInput");
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    addMessage("📂 Uploading log file...", "user");
+
+    fetch("/api/upload", {
+      method: "POST",
+      body: formData
+    })
+            .then(res => res.json())
+            .then(data => {
+
+              let formatted = `
+        🔍 <b>Analysis Result:</b><br><br>
+        <b>Attack:</b> ${data.attack}<br>
+        <b>Risk:</b> ${data.risk}<br><br>
+        <b>AI Insight:</b><br>${data.aiExplanation}
+        `;
+
+              addMessage(formatted, "ai");
+            });
+  }
+
+</script>
+
+</body>
+</html>
