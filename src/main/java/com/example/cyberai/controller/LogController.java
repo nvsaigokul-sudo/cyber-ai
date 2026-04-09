@@ -1,35 +1,28 @@
 package com.example.cyberai.controller;
 
-import com.example.cyberai.dto.AnalysisResponse;
-import com.example.cyberai.service.LogService;
-import com.example.cyberai.service.AIService;
-
+import com.example.cyberai.model.ThreatReport;
+import com.example.cyberai.service.ThreatAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class LogController {
 
     @Autowired
-    private LogService logService;
+    private ThreatAnalysisService analysisService;
 
-    @Autowired
-    private AIService aiService;
+    @PostMapping("/analyze")
+    public ResponseEntity<ThreatReport> analyzeLog(@RequestBody Map<String, String> request) {
+        String logContent = request.get("logContent");
+        String fileName = request.get("fileName");
 
-    @PostMapping("/upload")
-    public AnalysisResponse uploadLog(@RequestParam("file") MultipartFile file) {
-        return logService.processLog(file);
-    }
+        System.out.println("Analyzing file: " + fileName);
 
-    // 🔥 SUPER SAFE VERSION (NO JSON, NO MAP)
-    @PostMapping("/chat")
-    public String chat(@RequestBody(required = false) String message) {
-        if (message == null || message.trim().isEmpty()) {
-            return "Please enter a message.";
-        }
-        return aiService.chatWithContext(message);
+        ThreatReport report = analysisService.analyzeLog(logContent);
+        return ResponseEntity.ok(report);
     }
 }

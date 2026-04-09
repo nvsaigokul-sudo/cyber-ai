@@ -1,18 +1,8 @@
-# Step 1: Build using Maven
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+# Clean and compile
+mvn clean compile
 
-WORKDIR /app
-COPY . .
+# Package the application
+mvn clean package
 
-RUN mvn clean package -DskipTests
-
-# Step 2: Run app
-FROM eclipse-temurin:21-jdk
-
-WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application
+java -jar target/cyber-ai-1.0.0.jar
