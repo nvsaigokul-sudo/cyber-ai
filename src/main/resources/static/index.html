@@ -2,165 +2,456 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cyber-AI Sentinel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Cyber-AI Sentinel | Advanced Threat Intelligence Platform</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', monospace;
+      font-family: 'Segoe UI', 'Poppins', 'Courier New', monospace;
       background: radial-gradient(circle at 20% 50%, #0a0e27 0%, #000000 100%);
       color: #e0e0e0;
       min-height: 100vh;
       padding: 20px;
+      position: relative;
     }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+              linear-gradient(rgba(0, 255, 157, 0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0, 255, 157, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(40px, 40px); }
+    }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      background: rgba(0, 255, 157, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      animation: float 15s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      50% { opacity: 0.5; }
+      100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+    }
+
     .container {
-      max-width: 1400px;
+      position: relative;
+      z-index: 1;
+      max-width: 1600px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 400px;
       gap: 20px;
     }
+
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Header Styles */
     .header {
-      background: rgba(10,20,30,0.6);
+      background: rgba(10, 20, 30, 0.6);
       backdrop-filter: blur(15px);
       border-radius: 20px;
-      padding: 20px;
+      padding: 20px 30px;
       margin-bottom: 20px;
-      border: 1px solid rgba(0,255,157,0.3);
+      border: 1px solid rgba(0, 255, 157, 0.3);
+      animation: glowPulse 3s infinite;
     }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 157, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(0, 255, 157, 0.2); }
+    }
+
     .logo-section h1 {
+      font-size: 1.8rem;
       background: linear-gradient(135deg, #00ff9d, #00b8ff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
+
+    .logo-section p {
+      color: #00ff9d;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    /* Upload Zone */
     .upload-zone {
-      background: rgba(0,20,30,0.6);
-      border: 2px dashed rgba(0,255,157,0.3);
+      background: rgba(0, 20, 30, 0.6);
+      backdrop-filter: blur(10px);
+      border: 2px dashed rgba(0, 255, 157, 0.3);
       border-radius: 20px;
       padding: 40px;
       text-align: center;
       cursor: pointer;
+      transition: all 0.3s;
       margin-bottom: 20px;
     }
+
+    .upload-zone:hover {
+      border-color: #00ff9d;
+      background: rgba(0, 255, 157, 0.05);
+      transform: translateY(-3px);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      color: #00ff9d;
+      margin-bottom: 15px;
+    }
+
+    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       margin-bottom: 20px;
     }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
     .stat-card {
-      background: rgba(10,20,30,0.6);
+      background: rgba(10, 20, 30, 0.6);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       padding: 15px;
-      border: 1px solid rgba(0,255,157,0.2);
+      border: 1px solid rgba(0, 255, 157, 0.2);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
     }
-    .stat-value { font-size: 2rem; font-weight: bold; }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ff9d, transparent);
+      animation: scan 3s infinite;
+    }
+
+    @keyframes scan {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: #00ff9d;
+    }
+
+    .stat-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #00ff9d;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      font-family: monospace;
+    }
+
     .threat-meter {
       margin-top: 10px;
-      height: 6px;
-      background: rgba(255,255,255,0.1);
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       overflow: hidden;
     }
+
     .threat-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #00ff9d, #ff0033);
-      transition: width 0.5s;
+      border-radius: 10px;
+      transition: width 0.5s ease;
     }
+
+    /* Charts */
     .charts-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       margin-bottom: 20px;
     }
+
+    @media (max-width: 768px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .chart-card {
-      background: rgba(10,20,30,0.6);
+      background: rgba(10, 20, 30, 0.6);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       padding: 15px;
+      border: 1px solid rgba(0, 255, 157, 0.2);
     }
+
+    .chart-title {
+      color: #00ff9d;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    /* Log Viewer */
     .log-viewer {
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
+      border: 1px solid rgba(0, 255, 157, 0.3);
+      overflow: hidden;
       margin-bottom: 20px;
     }
+
+    .log-header {
+      background: rgba(0, 255, 157, 0.1);
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(0, 255, 157, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
     .log-content {
       height: 250px;
       overflow-y: auto;
       padding: 15px;
+      font-family: 'Courier New', monospace;
       font-size: 11px;
     }
+
+    .log-line {
+      padding: 4px;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 2px;
+    }
+
+    .log-line:hover {
+      background: rgba(0, 255, 157, 0.05);
+    }
+
+    .threat-line-critical {
+      border-left-color: #ff0033;
+      background: rgba(255, 0, 51, 0.1);
+    }
+
+    .threat-line-high {
+      border-left-color: #ff6600;
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    /* Analyze Button */
     .analyze-btn {
       background: linear-gradient(135deg, #00ff9d, #00b8ff);
       color: #000;
       border: none;
-      padding: 12px;
+      padding: 12px 25px;
       font-size: 1rem;
       font-weight: bold;
       border-radius: 50px;
       cursor: pointer;
+      transition: all 0.3s;
       width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
+    .analyze-btn:hover:not(:disabled) {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+    }
+
+    .analyze-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Chat Sidebar */
     .chat-sidebar {
       position: sticky;
       top: 20px;
       height: calc(100vh - 40px);
     }
+
+    @media (max-width: 1200px) {
+      .chat-sidebar {
+        position: static;
+        height: auto;
+        margin-top: 20px;
+      }
+    }
+
     .chat-container {
-      background: rgba(10,20,30,0.7);
+      background: rgba(10, 20, 30, 0.7);
       backdrop-filter: blur(15px);
       border-radius: 20px;
-      border: 1px solid rgba(0,255,157,0.3);
+      border: 1px solid rgba(0, 255, 157, 0.3);
       height: 100%;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
+
+    .chat-header {
+      background: linear-gradient(135deg, rgba(0, 255, 157, 0.15), rgba(0, 184, 255, 0.15));
+      padding: 15px;
+      border-bottom: 1px solid rgba(0, 255, 157, 0.3);
+      text-align: center;
+    }
+
+    .chat-header h3 {
+      color: #00ff9d;
+      font-size: 1rem;
+    }
+
+    .chat-header p {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
     .chat-messages {
       flex: 1;
       overflow-y: auto;
       padding: 15px;
       max-height: 500px;
     }
+
     .message {
       margin-bottom: 15px;
       display: flex;
       gap: 10px;
     }
-    .message.user { flex-direction: row-reverse; }
-    .message-content {
-      padding: 10px 15px;
-      border-radius: 15px;
-      max-width: 80%;
-      font-size: 0.85rem;
+
+    .message.user {
+      flex-direction: row-reverse;
     }
+
+    .message-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: linear-gradient(135deg, #00ff9d, #00b8ff);
+    }
+
+    .message.ai .message-avatar {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00ff9d;
+    }
+
+    .message-content {
+      max-width: 80%;
+      padding: 10px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
     .message.user .message-content {
       background: linear-gradient(135deg, #00ff9d, #00b8ff);
       color: #000;
     }
+
     .message.ai .message-content {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(0,255,157,0.3);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 255, 157, 0.2);
     }
+
+    .message-content pre {
+      background: #0a0a0a;
+      padding: 8px;
+      border-radius: 8px;
+      border-left: 3px solid #00ff9d;
+      overflow-x: auto;
+      margin: 8px 0;
+      font-size: 0.7rem;
+    }
+
+    .message-content code {
+      color: #00ff9d;
+      font-family: monospace;
+    }
+
+    .message-content strong {
+      color: #00ff9d;
+    }
+
     .chat-input-area {
       padding: 15px;
-      border-top: 1px solid rgba(0,255,157,0.3);
+      border-top: 1px solid rgba(0, 255, 157, 0.3);
       display: flex;
       gap: 10px;
     }
+
     .chat-input {
       flex: 1;
-      background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(0,255,157,0.3);
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 255, 157, 0.3);
       border-radius: 25px;
-      padding: 10px;
+      padding: 10px 15px;
       color: #fff;
+      font-family: inherit;
       resize: none;
+      font-size: 0.85rem;
     }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: #00ff9d;
+    }
+
     .send-btn {
       background: linear-gradient(135deg, #00ff9d, #00b8ff);
       border: none;
@@ -168,7 +459,14 @@
       width: 40px;
       height: 40px;
       cursor: pointer;
+      transition: all 0.3s;
     }
+
+    .send-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Loading Overlay */
     .loading-overlay {
       display: none;
       position: fixed;
@@ -176,80 +474,184 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.9);
       z-index: 9999;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     }
+
     .loading-spinner {
       width: 50px;
       height: 50px;
-      border: 3px solid rgba(0,255,157,0.3);
+      border: 3px solid rgba(0, 255, 157, 0.3);
       border-top-color: #00ff9d;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 1000px) {
-      .container { grid-template-columns: 1fr; }
-      .chat-sidebar { position: static; height: auto; margin-top: 20px; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .charts-container { grid-template-columns: 1fr; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Typing Indicator */
+    .typing-dots::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 255, 157, 0.1);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00ff9d;
+      border-radius: 10px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+      font-weight: bold;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
-  <p style="margin-top: 20px; color:#00ff9d">Analyzing Threats...</p>
+  <p style="margin-top: 20px; color: #00ff9d;">🤖 AI Analyzing Threats...</p>
 </div>
 
 <div class="container">
+  <!-- Main Content -->
   <div class="main-content">
+    <!-- Header -->
     <div class="header">
       <div class="logo-section">
         <h1><i class="fas fa-shield-halos"></i> CYBER-AI SENTINEL</h1>
-        <p>Advanced Threat Intelligence with AI Assistant</p>
+        <p>Advanced Threat Intelligence Platform with AI Assistant</p>
       </div>
     </div>
 
+    <!-- Upload Zone -->
     <div class="upload-zone" id="uploadZone">
-      <div class="upload-icon"><i class="fas fa-cloud-upload-alt" style="font-size: 3rem;"></i></div>
+      <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
       <h3>DROP LOG FILE HERE</h3>
-      <input type="file" id="logFile" accept=".log,.txt,.json" style="display:none">
-      <div id="fileName" style="margin-top: 10px; color:#00ff9d"></div>
+      <p style="margin-top: 8px; opacity: 0.7;">or click to browse (.log, .txt, .json)</p>
+      <input type="file" id="logFile" accept=".log,.txt,.json" style="display: none;">
+      <div id="fileName" style="margin-top: 12px; color: #00ff9d; font-size: 0.8rem;"></div>
     </div>
 
+    <!-- Stats Dashboard -->
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-title">CRITICAL</div><div class="stat-value" id="criticalCount">0</div><div class="threat-meter"><div class="threat-fill" id="criticalMeter"></div></div></div>
-      <div class="stat-card"><div class="stat-title">HIGH</div><div class="stat-value" id="highCount">0</div><div class="threat-meter"><div class="threat-fill" id="highMeter"></div></div></div>
-      <div class="stat-card"><div class="stat-title">THREAT SCORE</div><div class="stat-value" id="threatScore">0%</div><div class="threat-meter"><div class="threat-fill" id="scoreMeter"></div></div></div>
-      <div class="stat-card"><div class="stat-title">LINES</div><div class="stat-value" id="totalLines">0</div></div>
+      <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-skull"></i> CRITICAL</div>
+        <div class="stat-value" id="criticalCount">0</div>
+        <div class="threat-meter"><div class="threat-fill" id="criticalMeter"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-exclamation-triangle"></i> HIGH</div>
+        <div class="stat-value" id="highCount">0</div>
+        <div class="threat-meter"><div class="threat-fill" id="highMeter"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-chart-line"></i> THREAT SCORE</div>
+        <div class="stat-value" id="threatScore">0%</div>
+        <div class="threat-meter"><div class="threat-fill" id="scoreMeter"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-database"></i> LINES</div>
+        <div class="stat-value" id="totalLines">0</div>
+      </div>
     </div>
 
+    <!-- Charts -->
     <div class="charts-container">
-      <div class="chart-card"><div class="chart-title">THREAT DISTRIBUTION</div><canvas id="threatPieChart"></canvas></div>
-      <div class="chart-card"><div class="chart-title">THREAT TREND</div><canvas id="threatLineChart"></canvas></div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-chart-pie"></i> THREAT DISTRIBUTION</div>
+        <canvas id="threatPieChart" style="max-height: 200px;"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-chart-line"></i> THREAT TREND</div>
+        <canvas id="threatLineChart" style="max-height: 200px;"></canvas>
+      </div>
     </div>
 
+    <!-- Log Viewer -->
     <div class="log-viewer">
-      <div class="log-header" style="padding:10px 15px; background:rgba(0,255,157,0.1)"><span>LOG ANALYSIS</span><span id="logStats">Ready</span></div>
-      <div class="log-content" id="logContent"><div style="text-align:center;padding:40px">Upload a log file to begin</div></div>
+      <div class="log-header">
+        <span><i class="fas fa-terminal"></i> LOG ANALYSIS</span>
+        <span id="logStats">Ready</span>
+      </div>
+      <div class="log-content" id="logContent">
+        <div style="text-align: center; padding: 40px; color: #666;">
+          <i class="fas fa-upload" style="font-size: 2rem;"></i>
+          <p>Upload a log file to begin analysis</p>
+        </div>
+      </div>
     </div>
 
-    <button class="analyze-btn" id="analyzeBtn">ANALYZE WITH AI</button>
+    <!-- Analyze Button -->
+    <button class="analyze-btn" id="analyzeBtn">
+      <i class="fas fa-microchip"></i> ANALYZE WITH AI
+    </button>
   </div>
 
+  <!-- Chat Sidebar -->
   <div class="chat-sidebar">
     <div class="chat-container">
-      <div class="chat-header" style="padding:15px; text-align:center; border-bottom:1px solid rgba(0,255,157,0.3)">
+      <div class="chat-header">
         <h3><i class="fas fa-robot"></i> AI Security Assistant</h3>
+        <p>Ask about threats, solutions, or protection</p>
       </div>
       <div class="chat-messages" id="chatMessages">
-        <div class="message ai"><div class="message-content">Hello! I'm your AI security analyst. Upload and analyze a log file, then ask me about threats or solutions!</div></div>
+        <div class="message ai">
+          <div class="message-avatar"><i class="fas fa-robot"></i></div>
+          <div class="message-content">
+            🤖 <strong>Hello! I'm your AI security analyst.</strong><br><br>
+            I can help you with:<br>
+            • 📊 Analyzing threat reports<br>
+            • 🛡️ Providing protection commands<br>
+            • 🔧 Remediation steps<br>
+            • 💻 Security best practices<br><br>
+            <strong>Try asking:</strong><br>
+            "What are the solutions for these threats?"<br>
+            "How do I protect my system?"<br>
+            "Show me removal commands"
+          </div>
+        </div>
       </div>
       <div class="chat-input-area">
-        <textarea class="chat-input" id="chatInput" placeholder="Ask about threats..." rows="2"></textarea>
+        <textarea class="chat-input" id="chatInput" placeholder="Ask about threats, solutions, or protection..." rows="2"></textarea>
         <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
       </div>
     </div>
@@ -257,39 +659,474 @@
 </div>
 
 <script>
-  let currentLogContent = "", currentThreatData = null, pieChart, lineChart;
-
-  for(let i=0;i<30;i++){let p=document.createElement('div');p.className='particle';p.style.cssText=`position:fixed;background:rgba(0,255,157,0.3);border-radius:50%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;left:${Math.random()*100}%;animation:float ${Math.random()*10+10}s infinite`;document.body.appendChild(p);}
-
-  function initCharts(){
-    pieChart=new Chart(document.getElementById('threatPieChart'),{type:'doughnut',data:{labels:['Critical','High','Medium','Low'],datasets:[{data:[0,0,0,0],backgroundColor:['#ff0033','#ff6600','#ffcc00','#00ff9d']}]},options:{responsive:true}});
-    lineChart=new Chart(document.getElementById('threatLineChart'),{type:'line',data:{labels:['Seg1','Seg2','Seg3','Seg4','Seg5'],datasets:[{label:'Threats',data:[0,0,0,0,0],borderColor:'#00ff9d',backgroundColor:'rgba(0,255,157,0.1)',tension:0.4}]},options:{responsive:true}});
+  // Initialize particles
+  for(let i = 0; i < 40; i++) {
+    let particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.width = particle.style.height = Math.random() * 3 + 1 + 'px';
+    particle.style.animationDelay = Math.random() * 15 + 's';
+    particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+    document.body.appendChild(particle);
   }
 
-  document.getElementById('uploadZone').onclick=()=>document.getElementById('logFile').click();
-  document.getElementById('logFile').onchange=e=>{let f=e.target.files[0];if(f){document.getElementById('fileName').innerHTML=`✓ ${f.name}`;let r=new FileReader();r.onload=ev=>{currentLogContent=ev.target.result;let lines=currentLogContent.split('\n').length;document.getElementById('totalLines').innerHTML=lines;document.getElementById('logContent').innerHTML=currentLogContent.split('\n').slice(0,100).map(l=>`<div>${escapeHtml(l)}</div>`).join('');};r.readAsText(f);}};
+  let currentLogContent = "";
+  let currentFileName = "";
+  let currentThreatData = null;
+  let pieChart, lineChart;
 
-  document.getElementById('analyzeBtn').onclick=async()=>{if(!currentLogContent){alert('Upload a log file first');return;}
-    document.getElementById('loadingOverlay').style.display='flex';document.getElementById('analyzeBtn').disabled=true;
-    try{let res=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({logContent:currentLogContent})});if(!res.ok)throw new Error();let data=await res.json();currentThreatData=data;
-      document.getElementById('criticalCount').innerHTML=data.critical||0;document.getElementById('highCount').innerHTML=data.high||0;document.getElementById('threatScore').innerHTML=(data.threatScore||0)+'%';
-      let lines=currentLogContent.split('\n').length;document.getElementById('criticalMeter').style.width=Math.min(100,((data.critical||0)/(lines/10))*10)+'%';document.getElementById('highMeter').style.width=Math.min(100,((data.high||0)/(lines/10))*10)+'%';document.getElementById('scoreMeter').style.width=(data.threatScore||0)+'%';
-      pieChart.data.datasets[0].data=[data.critical||0,data.high||0,data.medium||0,data.low||0];pieChart.update();
-      if(data.threatDistribution){lineChart.data.datasets[0].data=data.threatDistribution;lineChart.update();}
-      highlightThreats();}catch(e){console.error(e);alert('Analysis failed');}
-    finally{document.getElementById('loadingOverlay').style.display='none';document.getElementById('analyzeBtn').disabled=false;}};
+  // Initialize charts
+  function initCharts() {
+    const ctx1 = document.getElementById('threatPieChart').getContext('2d');
+    pieChart = new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['Critical', 'High', 'Medium', 'Low'],
+        datasets: [{
+          data: [0, 0, 0, 0],
+          backgroundColor: ['#ff0033', '#ff6600', '#ffcc00', '#00ff9d'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#e0e0e0', font: { size: 10 } } }
+        }
+      }
+    });
 
-  function highlightThreats(){let lines=currentLogContent.split('\n');let html=lines.slice(0,200).map(l=>{if(/(sql injection|xss|buffer overflow|ransomware|exploit|cve|403|500)/i.test(l))return `<div style="border-left:3px solid #ff0033;background:rgba(255,0,51,0.1);padding:4px">⚠️ ${escapeHtml(l)}</div>`;if(/(attack|malware|unauthorized|breach)/i.test(l))return `<div style="border-left:3px solid #ff6600;background:rgba(255,102,0,0.1);padding:4px">⚠️ ${escapeHtml(l)}</div>`;return `<div style="padding:4px">${escapeHtml(l)}</div>`;}).join('');document.getElementById('logContent').innerHTML=html;}
+    const ctx2 = document.getElementById('threatLineChart').getContext('2d');
+    lineChart = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: ['Seg 1', 'Seg 2', 'Seg 3', 'Seg 4', 'Seg 5', 'Seg 6', 'Seg 7', 'Seg 8', 'Seg 9', 'Seg 10'],
+        datasets: [{
+          label: 'Threat Density',
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          borderColor: '#00ff9d',
+          backgroundColor: 'rgba(0, 255, 157, 0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { labels: { color: '#e0e0e0', font: { size: 10 } } }
+        },
+        scales: {
+          y: { grid: { color: 'rgba(255,255,255,0.1)' } },
+          x: { grid: { color: 'rgba(255,255,255,0.1)' } }
+        }
+      }
+    });
+  }
 
-  async function sendMessage(){let input=document.getElementById('chatInput');let msg=input.value.trim();if(!msg)return;addMessage(msg,'user');input.value='';addMessage('Thinking...','ai-thinking');
-    try{let context=currentThreatData?JSON.stringify(currentThreatData):'No analysis yet';let res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,context:context})});if(!res.ok)throw new Error();let data=await res.json();document.querySelectorAll('.message').forEach(m=>{if(m.innerHTML.includes('Thinking...'))m.remove();});addMessage(data.reply,'ai');}catch(e){document.querySelectorAll('.message').forEach(m=>{if(m.innerHTML.includes('Thinking...'))m.remove();});addMessage('AI service unavailable. Using offline responses.','ai');}}
+  // File upload handlers
+  document.getElementById('uploadZone').addEventListener('click', () => {
+    document.getElementById('logFile').click();
+  });
 
-  function addMessage(text,sender){let div=document.createElement('div');div.className=`message ${sender.startsWith('ai')?'ai':'user'}`;div.innerHTML=`<div class="message-content">${escapeHtml(text)}</div>`;document.getElementById('chatMessages').appendChild(div);div.scrollIntoView({behavior:'smooth'});}
+  document.getElementById('logFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if(file) {
+      currentFileName = file.name;
+      document.getElementById('fileName').innerHTML = `<i class="fas fa-check-circle"></i> ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
 
-  document.getElementById('sendBtn').onclick=sendMessage;
-  document.getElementById('chatInput').onkeypress=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}};
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        currentLogContent = event.target.result;
+        const lines = currentLogContent.split('\n').length;
+        document.getElementById('totalLines').innerHTML = lines.toLocaleString();
 
-  function escapeHtml(t){let d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+        // Preview first 100 lines
+        const previewLines = currentLogContent.split('\n').slice(0, 100);
+        document.getElementById('logContent').innerHTML = previewLines.map(line =>
+                `<div class="log-line">${escapeHtml(line) || ' '}</div>`
+        ).join('');
+        document.getElementById('logStats').innerHTML = `<i class="fas fa-check"></i> Loaded ${lines} lines`;
+
+        // Reset threat stats
+        resetThreatStats();
+      };
+      reader.readAsText(file);
+    }
+  });
+
+  function resetThreatStats() {
+    document.getElementById('criticalCount').innerHTML = '0';
+    document.getElementById('highCount').innerHTML = '0';
+    document.getElementById('threatScore').innerHTML = '0%';
+    document.getElementById('criticalMeter').style.width = '0%';
+    document.getElementById('highMeter').style.width = '0%';
+    document.getElementById('scoreMeter').style.width = '0%';
+
+    if(pieChart) {
+      pieChart.data.datasets[0].data = [0, 0, 0, 0];
+      pieChart.update();
+    }
+  }
+
+  // Analyze button handler
+  document.getElementById('analyzeBtn').addEventListener('click', async function() {
+    if(!currentLogContent) {
+      showToast('Please upload a log file first', 'error');
+      return;
+    }
+
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    this.disabled = true;
+
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          logContent: currentLogContent,
+          fileName: currentFileName
+        })
+      });
+
+      if(!response.ok) throw new Error('Analysis failed');
+
+      currentThreatData = await response.json();
+      updateUIWithThreatData(currentThreatData);
+      showToast('✅ Analysis completed successfully!', 'success');
+
+    } catch(error) {
+      console.error('Analysis error:', error);
+      // Fallback to local analysis
+      const localData = performLocalAnalysis(currentLogContent);
+      currentThreatData = localData;
+      updateUIWithThreatData(localData);
+      showToast('⚠️ Using local analysis (backend unavailable)', 'warning');
+    } finally {
+      document.getElementById('loadingOverlay').style.display = 'none';
+      this.disabled = false;
+    }
+  });
+
+  function updateUIWithThreatData(data) {
+    document.getElementById('criticalCount').innerHTML = data.critical || 0;
+    document.getElementById('highCount').innerHTML = data.high || 0;
+    document.getElementById('threatScore').innerHTML = (data.threatScore || 0) + '%';
+
+    const lines = currentLogContent.split('\n').length;
+    const criticalPercent = lines > 0 ? Math.min(100, ((data.critical || 0) / (lines/10)) * 10) : 0;
+    const highPercent = lines > 0 ? Math.min(100, ((data.high || 0) / (lines/10)) * 10) : 0;
+
+    document.getElementById('criticalMeter').style.width = criticalPercent + '%';
+    document.getElementById('highMeter').style.width = highPercent + '%';
+    document.getElementById('scoreMeter').style.width = (data.threatScore || 0) + '%';
+
+    if(pieChart) {
+      pieChart.data.datasets[0].data = [data.critical || 0, data.high || 0, data.medium || 0, data.low || 0];
+      pieChart.update();
+    }
+
+    if(lineChart && data.threatDistribution) {
+      lineChart.data.datasets[0].data = data.threatDistribution;
+      lineChart.update();
+    }
+
+    highlightThreatsInLog(currentLogContent);
+
+    const scoreElem = document.getElementById('threatScore');
+    const score = data.threatScore || 0;
+    scoreElem.style.color = score > 70 ? '#ff0033' : (score > 40 ? '#ff6600' : '#00ff9d');
+  }
+
+  function highlightThreatsInLog(logContent) {
+    const lines = logContent.split('\n');
+    const criticalPattern = /(SQL injection|XSS|buffer overflow|ransomware|rootkit|backdoor|exploit|CVE|403|401|500)/gi;
+    const highPattern = /(attack|intrusion|malware|unauthorized|breach)/gi;
+
+    const highlighted = lines.slice(0, 200).map(line => {
+      if(criticalPattern.test(line)) {
+        return `<div class="log-line threat-line-critical"><i class="fas fa-skull" style="color:#ff0033"></i> ${escapeHtml(line)}</div>`;
+      } else if(highPattern.test(line)) {
+        return `<div class="log-line threat-line-high"><i class="fas fa-exclamation-triangle" style="color:#ff6600"></i> ${escapeHtml(line)}</div>`;
+      }
+      return `<div class="log-line">${escapeHtml(line)}</div>`;
+    }).join('');
+
+    document.getElementById('logContent').innerHTML = highlighted;
+  }
+
+  function performLocalAnalysis(logContent) {
+    const lines = logContent.split('\n');
+    let critical = 0, high = 0, medium = 0, low = 0;
+
+    const criticalPatterns = /(sql injection|xss|buffer overflow|ransomware|rootkit|backdoor|exploit|cve|403|401|500)/gi;
+    const highPatterns = /(attack|intrusion|malware|unauthorized|breach)/gi;
+    const mediumPatterns = /(error|failed|timeout|denied|invalid)/gi;
+
+    lines.forEach(line => {
+      const l = line.toLowerCase();
+      if(criticalPatterns.test(l)) critical++;
+      else if(highPatterns.test(l)) high++;
+      else if(mediumPatterns.test(l)) medium++;
+      else if(/(warning|notice)/i.test(l)) low++;
+    });
+
+    const threatScore = Math.min(100, Math.floor((critical * 100 + high * 50) / (lines.length / 100) || 0));
+
+    // Calculate distribution
+    const distribution = [];
+    const segSize = Math.ceil(lines.length / 10);
+    for(let i = 0; i < 10; i++) {
+      let count = 0;
+      for(let j = i * segSize; j < Math.min((i + 1) * segSize, lines.length); j++) {
+        if(/(error|fail|attack|malware)/i.test(lines[j])) count++;
+      }
+      distribution.push(count);
+    }
+
+    return { critical, high, medium, low, threatScore, threatDistribution: distribution };
+  }
+
+  // Chat functionality
+  async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    input.value = '';
+
+    // Show typing indicator
+    const typingIndicator = addTypingIndicator();
+
+    try {
+      const context = currentThreatData ? JSON.stringify(currentThreatData) : 'No analysis yet';
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message, context: context })
+      });
+
+      if (!response.ok) throw new Error('Chat failed');
+
+      const data = await response.json();
+      removeTypingIndicator(typingIndicator);
+
+      // Format and add the response
+      const formattedReply = formatResponse(data.reply);
+      addMessage(formattedReply, 'ai');
+
+      // Add remediation steps if available
+      if (data.remediation && data.remediation.length > 0) {
+        addRemediationSteps(data.remediation);
+      }
+
+    } catch (error) {
+      console.error('Chat error:', error);
+      removeTypingIndicator(typingIndicator);
+
+      // Smart fallback response based on user message
+      const fallbackReply = getSmartFallbackResponse(message, currentThreatData);
+      addMessage(fallbackReply, 'ai');
+    }
+  }
+
+  function getSmartFallbackResponse(message, threatData) {
+    const lowerMsg = message.toLowerCase();
+
+    if (lowerMsg.includes('solution') || lowerMsg.includes('fix') || lowerMsg.includes('solve')) {
+      if (threatData && threatData.critical > 0) {
+        return `🛡️ **Solutions for Detected Threats:**\n\n` +
+                `Based on your log analysis (${threatData.critical} critical threats, ${threatData.threatScore}% score):\n\n` +
+                `**Immediate Actions:**\n` +
+                `\`\`\`bash\n` +
+                `# Isolate the system\n` +
+                `sudo ifconfig eth0 down\n` +
+                `\n` +
+                `# Kill suspicious processes\n` +
+                `ps aux | grep -i suspicious | awk '{print $2}' | xargs sudo kill -9\n` +
+                `\n` +
+                `# Run malware scan\n` +
+                `sudo clamscan -r --remove /\n` +
+                `\`\`\`\n\n` +
+                `**Prevention:**\n` +
+                `• Enable firewall: \`sudo ufw enable\`\n` +
+                `• Update system: \`sudo apt update && sudo apt upgrade\`\n` +
+                `• Monitor logs: \`sudo journalctl -f\``;
+      } else {
+        return `🔧 **General Security Solutions:**\n\n` +
+                `\`\`\`bash\n` +
+                `# 1. Update your system\n` +
+                `sudo apt update && sudo apt upgrade -y\n` +
+                `\n` +
+                `# 2. Enable firewall\n` +
+                `sudo ufw enable\n` +
+                `sudo ufw allow ssh\n` +
+                `\n` +
+                `# 3. Install security tools\n` +
+                `sudo apt install -y clamav rkhunter fail2ban\n` +
+                `\n` +
+                `# 4. Run security scan\n` +
+                `sudo clamscan -r /home\n` +
+                `\`\`\``;
+      }
+    }
+
+    if (lowerMsg.includes('protect') || lowerMsg.includes('secure')) {
+      return `🔒 **Complete Protection Guide:**\n\n` +
+              `**1. Network Security:**\n` +
+              `\`\`\`bash\n` +
+              `sudo ufw enable\n` +
+              `sudo ufw default deny incoming\n` +
+              `sudo ufw allow 22/tcp  # SSH\n` +
+              `\`\`\`\n\n` +
+              `**2. System Hardening:**\n` +
+              `\`\`\`bash\n` +
+              `# Remove unnecessary services\n` +
+              `sudo systemctl disable bluetooth\n` +
+              `\n` +
+              `# Set strong password policy\n` +
+              `sudo apt install libpam-pwquality\n` +
+              `\`\`\`\n\n` +
+              `**3. Monitoring:**\n` +
+              `\`\`\`bash\n` +
+              `# Real-time log monitoring\n` +
+              `sudo journalctl -f\n` +
+              `\n` +
+              `# Check failed logins\n` +
+              `sudo cat /var/log/auth.log | grep 'Failed password' | wc -l\n` +
+              `\`\`\``;
+    }
+
+    if (lowerMsg.includes('malware') || lowerMsg.includes('virus')) {
+      return `🦠 **Malware Removal Steps:**\n\n` +
+              `\`\`\`bash\n` +
+              `# 1. Update virus definitions\n` +
+              `sudo freshclam\n` +
+              `\n` +
+              `# 2. Run full system scan\n` +
+              `sudo clamscan -r --remove --bell /\n` +
+              `\n` +
+              `# 3. Check for rootkits\n` +
+              `sudo rkhunter --check --sk\n` +
+              `\n` +
+              `# 4. Check running processes\n` +
+              `ps aux --sort=-%cpu | head -20\n` +
+              `\`\`\``;
+    }
+
+    return `🤖 **How can I help you today?**\n\n` +
+            `Try asking me:\n` +
+            `• "What are the solutions for these threats?"\n` +
+            `• "How do I protect my system?"\n` +
+            `• "Show me malware removal commands"\n` +
+            `• "How to check for unauthorized access?"\n\n` +
+            `I'll provide you with specific commands and step-by-step solutions!`;
+  }
+
+  function addTypingIndicator() {
+    const messagesDiv = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'message ai';
+    div.id = 'typing-indicator';
+    div.innerHTML = `
+                <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                <div class="message-content">🤔 Analyzing your question<span class="typing-dots"></span></div>
+            `;
+    messagesDiv.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth' });
+    return div;
+  }
+
+  function removeTypingIndicator(indicator) {
+    if (indicator && indicator.remove) indicator.remove();
+  }
+
+  function formatResponse(text) {
+    // Convert markdown code blocks
+    text = text.replace(/```bash\n(.*?)```/gs, (match, code) => {
+      return `<pre><code>${escapeHtml(code)}</code></pre>`;
+    });
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n/g, '<br>');
+    return text;
+  }
+
+  function addRemediationSteps(steps) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'message ai';
+
+    let stepsHtml = `<div class="message-avatar"><i class="fas fa-tools"></i></div>
+                            <div class="message-content">
+                            <strong>🛠️ Recommended Commands:</strong><br><br>`;
+
+    steps.forEach(step => {
+      stepsHtml += `
+                    <div style="background: #0a0a0a; margin: 8px 0; padding: 10px; border-radius: 8px; border-left: 3px solid #00ff9d;">
+                        <div>${escapeHtml(step.description)}</div>
+                        <code style="color: #00ff9d; font-size: 0.75rem; display: block; margin-top: 5px;">${escapeHtml(step.command)}</code>
+                        <div style="font-size: 0.65rem; color: #888; margin-top: 3px;">OS: ${escapeHtml(step.os)}</div>
+                    </div>
+                `;
+    });
+
+    stepsHtml += `</div>`;
+    div.innerHTML = stepsHtml;
+    messagesDiv.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function addMessage(text, sender) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message ${sender}`;
+
+    if (sender === 'user') {
+      div.innerHTML = `
+                    <div class="message-avatar"><i class="fas fa-user"></i></div>
+                    <div class="message-content">${escapeHtml(text)}</div>
+                `;
+    } else {
+      div.innerHTML = `
+                    <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                    <div class="message-content">${text}</div>
+                `;
+    }
+
+    messagesDiv.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.background = type === 'success' ? '#00ff9d' : (type === 'warning' ? '#ff6600' : '#ff0033');
+    toast.style.color = type === 'success' ? '#000' : '#fff';
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Event listeners
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  document.getElementById('chatInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Initialize
   initCharts();
 </script>
 </body>
